@@ -1,35 +1,67 @@
 import { useEffect, useState } from "react";
 
 function App() {
-  const [visible,setVisible]=useState(true)
-  useEffect(function () {
-   let clock= setInterval(function () {
-      setVisible(visible=>!visible)
-    }, 5000);
-    return ()=>clearInterval(clock)
-  }
-  
-, []);
-  return (
-    <>
-      <h1>Counter</h1>
-     {visible ? <Counter></Counter>: null}
-    </>
-  );
-}
-function Counter(){
+  const [todoView, settodoView] = useState(1);
+  const [todoData,settodoData] = useState({})
+  const [loading,setLoading]=useState(true)
 
-  const [count, setCount] = useState(0);
-  useEffect(function () {
-    setInterval(function () {
-      setCount(count => count + 1);
-      setVisible(Math.random()>0.5 ? true:false)
-    }, 1000);
-  }, []);
+  useEffect(()=>
+    {
+        setLoading(true)
+        const fetchData=async ()=>
+          {
+            const response=await fetch('https://jsonplaceholder.typicode.com/todos/'+ todoView)
+            const data=await response.json()
+            settodoData(data)
+            setLoading(false)
+          }
+          fetchData()
+      
+      //   fetch('https://jsonplaceholder.typicode.com/todos/'+ todoView)
+      // .then(async (res)=>
+      //   {
+      //     const data=await res.json()
+      //     settodoData(data)
+         // setLoading(false)
+        // })
+       }
+   ,
+    [todoView])
   return (
     <>
-      <h1>{count}</h1>
+      <button style={{color:todoView==1 ? "red" :"green"}}
+        onClick={() => {
+          settodoView(1);
+        }}
+      >
+        Todo 1
+      </button>
+      <button style={{color:todoView==2 ? "red" :"green"}}
+        onClick={() => {
+          settodoView(2);
+        }}
+      >
+        Todo 2
+      </button>
+      <button style={{color:todoView==3 ? "red" :"green"}}
+        onClick={() => {
+          settodoView(3);
+        }}
+      >
+        Todo 3
+      </button>
+      <button style={{color:todoView==4 ? "red" :"green"}}
+        onClick={() => {
+          settodoView(4);
+        }}
+      >
+        Todo 4
+      </button>
+      <br />
+      {loading ? "Loading...": todoData.title}
+   
     </>
   );
 }
+
 export default App;
