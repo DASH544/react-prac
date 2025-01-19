@@ -1,57 +1,48 @@
-import { useState,useCallback, useEffect, useRef } from 'react'
-
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 function App() {
-  const [length, setLength] = useState(8);
-  const [Number, setNumber] = useState(false);
-  const [Char, setChar] = useState(false);
-  const [Pass, setPass] = useState("")
+  const [password,setPassword]=useState("")
+  const [length,setLength]=useState(8)
+  const [numAllowed,setNumAllowed]=useState(false)
+  const [specialAllowed,setSpecialAllowed]=useState(false)
   const passwordRef=useRef(null)
-  const passwordGen= useCallback(()=>
+  const clipboard=useCallback(()=>{
+    passwordRef.current?.select()
+    window.navigator.clipboard.writeText(password)
+  },[password])
+  const pass=useEffect(()=>
     {
-      let password=""
-      let str="ABCDEFGHIGKLMNOPQRSTUYWXZabcdefgihjklmnopqrtstuywxz"
-      if(Number) str+="0123456789"
-      if(Char) str+="!@#$%^&*()_+~"
+      let str=""
+      let char="ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstyxyz"
+      if(numAllowed) char+="1234567890"
+      if(specialAllowed) char+="!@#$%^&*()_+"
       for(let i=1;i<=length;i++)
         {
-          let chars=Math.floor(Math.random()*str.length+1)
-          password += str.charAt(chars)
+          let indexChar=Math.floor(Math.random() * char.length +1)
+          str+=char.charAt(indexChar)
         }
-        setPass(password)
-   
-
-    },[length,Number,Char,setPass])
-
-    // const copypassword=useCallback(()=>{
-    //   passwordRef.current?.select();
-    //  // passwordRef.current?.setSelectionRange(0,20)
-    //   window.navigator.clipboard.writeText(Pass)
-    // },[Pass])
-    useEffect(()=>{
-      passwordGen()},
-      [length,Number,Char,passwordGen])
-
+        setPassword(str)
+    },[length,numAllowed,specialAllowed])
   return (
-    <>
-     <div className='w-full max-w-md mx-auto shadow-md rounded-lg px-4 my-8 text-orange-400 bg-gray-700'>
-      <h1>Password Generator</h1>
-      <div className="flex flex-col gap-2">
-      <div className="flex gap-1">
-        <input type="text" className='w-full ps-2' name="" id="" placeholder="Password" readOnly value={Pass} ref={passwordRef} />
-        <button className="bg-orange-600 text-white px-4 py-1 rounded-xl">Copy</button> 
+    <div className='bg-black text-white gap-6 grid place-content-center min-h-screen'>
+      <div className='flex gap-8 w-80'>
+        <input type="text"  name="" id="" readOnly placeholder='Password' className=' text-black w-full  p-1 py-2' ref={passwordRef} value={password} />
+        <button onClick={clipboard}>COPY</button>
         </div>
-        <div className="flex gap-2">
-          <input type="range" name="" id="passlength" min={8} max={32} value={length} onChange={(e)=>setLength(e.target.value)}/>
-          <label htmlFor="passlength">Length:{length}</label>
-          <input type="checkbox" name="" id="Number" defaultChecked={Number} onChange={()=>{setNumber((prev)=>!prev)}} />
-          <label htmlFor="Number">Number</label>
-          <input type="checkbox" name="" id="Special-Char" defaultChecked={Char} onChange={()=>{setChar((prev)=>!prev)}} />
-          <label htmlFor="Special-Char">Special Char</label>
+        <div>
+          <div>
+            <input type="range"  name="" id="" min={1} max={32} value={length} placeholder={"password"}  onChange={(e)=>{setLength(e.target.value)}}/>
+            <span>Length:{length}</span>
+          </div>
+          <div>
+            <input type="checkbox" name="" id="" onChange={()=>setNumAllowed((prev)=>(!prev))}/>
+            <label htmlFor="">Numbers</label>
+            <input type="checkbox" name="" id="" onChange={()=>setSpecialAllowed((prev)=>(!prev))} />
+            <label htmlFor="">Special Characters</label>
+          </div>
         </div>
-      </div>
-     </div>
-    </>
+  
+    </div>
   )
 }
 
