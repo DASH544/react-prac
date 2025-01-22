@@ -7,7 +7,8 @@ function App() {
   const [specialAllowed,setSpecialAllowed]=useState(false)
   const passwordRef=useRef(null)
   const clipboard=useCallback(()=>{
-    passwordRef.current?.select()
+     passwordRef.current?.select()
+ 
     window.navigator.clipboard.writeText(password)
   },[password])
   const pass=useEffect(()=>
