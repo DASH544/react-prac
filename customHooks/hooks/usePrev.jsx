@@ -6,5 +6,5 @@ export default function usePrev(value)
         {
             ref.current=value
         },[value])
-        return ref.current
+        return ref.current //first time undefined
 }
